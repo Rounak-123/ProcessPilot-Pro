@@ -15,6 +15,7 @@ public:
 
     bool start();
     bool stop();
+    bool restart();
     bool isRunning();
 };
 

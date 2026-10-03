@@ -1,4 +1,5 @@
 #include <iostream>
+#include <unistd.h>
 #include "ServiceManager.h"
 
 int main()
@@ -18,37 +19,19 @@ int main()
         return 1;
     }
 
-    std::cout << "[2] Checking service status...\n";
+    std::cout << "[2] Service started.\n";
 
-    if (service.isRunning())
+    sleep(2);
+
+    std::cout << "[3] Restarting service...\n";
+
+    if (service.restart())
     {
-        std::cout << "Service is RUNNING.\n";
+        std::cout << "[4] Service restarted successfully.\n";
     }
     else
     {
-        std::cout << "Service is NOT RUNNING.\n";
-    }
-
-    std::cout << "[3] Stopping service...\n";
-
-    if (service.stop())
-    {
-        std::cout << "Service stopped.\n";
-    }
-    else
-    {
-        std::cout << "Failed to stop service.\n";
-    }
-
-    std::cout << "[4] Final status...\n";
-
-    if (service.isRunning())
-    {
-        std::cout << "Service is still RUNNING.\n";
-    }
-    else
-    {
-        std::cout << "Service is NOT RUNNING.\n";
+        std::cout << "Failed to restart service.\n";
     }
 
     return 0;

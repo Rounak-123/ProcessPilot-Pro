@@ -80,6 +80,24 @@ bool ServiceManager::stop()
     return false;
 }
 
+bool ServiceManager::restart()
+{
+    std::cout << "Restarting service..." << std::endl;
+
+    if (isRunning())
+    {
+        if (!stop())
+        {
+            std::cerr << "Failed to stop service." << std::endl;
+            return false;
+        }
+
+        sleep(1);
+    }
+
+    return start();
+}
+
 bool ServiceManager::isRunning()
 {
     if (processId <= 0)
