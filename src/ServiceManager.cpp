@@ -118,3 +118,39 @@ bool ServiceManager::isRunning()
 
     return false;
 }
+
+bool ServiceManager::monitorOnce()
+{
+    if (processId <= 0)
+    {
+        return false;
+    }
+
+    int status = 0;
+
+    pid_t result = waitpid(processId, &status, WNOHANG);
+
+    if (result == 0)
+    {
+        return true;
+    }
+
+    if (result == processId)
+    {
+        if (WIFEXITED(status))
+        {
+            std::cout << "Service exited with code: "
+                      << WEXITSTATUS(status) << std::endl;
+        }
+        else if (WIFSIGNALED(status))
+        {
+            std::cout << "Service terminated by signal: "
+                      << WTERMSIG(status) << std::endl;
+        }
+
+        processId = 0;
+        return false;
+    }
+
+    return false;
+}

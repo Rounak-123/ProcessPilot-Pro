@@ -17,6 +17,7 @@ public:
     bool stop();
     bool restart();
     bool isRunning();
+    bool monitorOnce();
 };
 
 #endif

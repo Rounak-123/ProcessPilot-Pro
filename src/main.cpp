@@ -11,7 +11,7 @@ int main()
 
     ServiceManager service("sleep");
 
-    std::cout << "[1] Starting service...\n";
+    std::cout << "Starting service...\n";
 
     if (!service.start())
     {
@@ -19,19 +19,23 @@ int main()
         return 1;
     }
 
-    std::cout << "[2] Service started.\n";
+    std::cout << "Service started.\n";
 
-    sleep(2);
-
-    std::cout << "[3] Restarting service...\n";
-
-    if (service.restart())
+    for (int i = 1; i <= 5; i++)
     {
-        std::cout << "[4] Service restarted successfully.\n";
-    }
-    else
-    {
-        std::cout << "Failed to restart service.\n";
+        sleep(2);
+
+        if (service.monitorOnce())
+        {
+            std::cout << "Monitor " << i
+                      << ": Service is RUNNING.\n";
+        }
+        else
+        {
+            std::cout << "Monitor " << i
+                      << ": Service has EXITED.\n";
+            break;
+        }
     }
 
     return 0;
