@@ -11,7 +11,7 @@ int main()
 
     ServiceManager service("sleep");
 
-    std::cout << "Starting service...\n";
+    std::cout << "[1] Starting service...\n";
 
     if (!service.start())
     {
@@ -19,9 +19,9 @@ int main()
         return 1;
     }
 
-    std::cout << "Service started.\n";
+    std::cout << "[2] Service started.\n";
 
-    for (int i = 1; i <= 5; i++)
+    for (int i = 1; i <= 20; i++)
     {
         sleep(2);
 
@@ -33,8 +33,19 @@ int main()
         else
         {
             std::cout << "Monitor " << i
-                      << ": Service has EXITED.\n";
-            break;
+                      << ": Service failure detected!\n";
+
+            std::cout << "Attempting automatic recovery...\n";
+
+            if (service.restart())
+            {
+                std::cout << "Recovery successful. Service restarted.\n";
+            }
+            else
+            {
+                std::cout << "Recovery failed.\n";
+                return 1;
+            }
         }
     }
 
