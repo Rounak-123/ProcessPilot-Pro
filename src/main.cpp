@@ -1,5 +1,5 @@
 #include <iostream>
-#include <string>
+#include <unistd.h>
 
 #include "ServiceManager.h"
 #include "DependencyManager.h"
@@ -16,7 +16,8 @@ void showMenu()
     std::cout << "3. Restart Service\n";
     std::cout << "4. Check Service Status\n";
     std::cout << "5. Show Dependencies\n";
-    std::cout << "6. Exit\n";
+    std::cout << "6. Monitor Service\n";
+    std::cout << "7. Exit\n";
     std::cout << "=================================\n";
     std::cout << "Enter choice: ";
 }
@@ -123,6 +124,57 @@ int main()
             }
 
             case 6:
+            {
+                if (!service.isRunning())
+                {
+                    std::cout << "Service is not running. Start it first.\n";
+                    break;
+                }
+
+                std::cout << "Monitoring service...\n";
+                std::cout << "Press Ctrl+C to stop monitoring.\n\n";
+
+                while (true)
+                {
+                    sleep(2);
+
+                    if (service.monitorOnce())
+                    {
+                        std::cout << "Service is RUNNING.\n";
+                    }
+                    else
+                    {
+                        std::cout << "Service failure detected!\n";
+                        Logger::warning("Service failure detected");
+
+                        std::cout << "Attempting automatic recovery...\n";
+                        Logger::info("Automatic recovery started");
+
+                        if (service.restart())
+                        {
+                            std::cout
+                                << "Recovery successful. Service restarted.\n";
+
+                            Logger::info(
+                                "Automatic recovery successful"
+                            );
+                        }
+                        else
+                        {
+                            std::cout << "Recovery failed.\n";
+                            Logger::error(
+                                "Automatic recovery failed"
+                            );
+
+                            break;
+                        }
+                    }
+                }
+
+                break;
+            }
+
+            case 7:
             {
                 std::cout << "Exiting ProcessPilot Pro.\n";
                 Logger::info("ProcessPilot Pro stopped");
