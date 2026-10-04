@@ -5,3 +5,4 @@ processpilot
 *.mod.c
 Module.symvers
 modules.order
+logs/*.log
