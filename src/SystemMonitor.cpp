@@ -3,102 +3,75 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <sys/utsname.h>
+#include <sys/sysinfo.h>
+#include <unistd.h>
 
-void SystemMonitor::showKernelInfo()
+void SystemMonitor::showSystemInfo()
 {
-    struct utsname systemInfo;
+    std::cout << "\n========== SYSTEM INFORMATION ==========\n";
 
-    if (uname(&systemInfo) == 0)
+    struct sysinfo info;
+
+    if (sysinfo(&info) == 0)
     {
-        std::cout << "\n--- Kernel Information ---\n";
-        std::cout << "System       : " << systemInfo.sysname << '\n';
-        std::cout << "Kernel       : " << systemInfo.release << '\n';
-        std::cout << "Architecture : " << systemInfo.machine << '\n';
+        unsigned long long totalRAM =
+            static_cast<unsigned long long>(info.totalram) * info.mem_unit;
+
+        unsigned long long freeRAM =
+            static_cast<unsigned long long>(info.freeram) * info.mem_unit;
+
+        std::cout << "Total RAM : "
+                  << totalRAM / (1024 * 1024)
+                  << " MB\n";
+
+        std::cout << "Free RAM  : "
+                  << freeRAM / (1024 * 1024)
+                  << " MB\n";
+
+        std::cout << "Uptime    : "
+                  << info.uptime / 3600
+                  << " hours\n";
     }
     else
     {
-        std::cout << "Unable to read kernel information.\n";
-    }
-}
-
-void SystemMonitor::showCpuInfo()
-{
-    std::ifstream file("/proc/cpuinfo");
-
-    if (!file)
-    {
-        std::cout << "Unable to read CPU information.\n";
-        return;
+        std::cout << "Unable to read system information.\n";
     }
 
-    std::string line;
-    int processorCount = 0;
-    std::string modelName;
+    std::ifstream cpuInfo("/proc/cpuinfo");
 
-    while (std::getline(file, line))
+    if (cpuInfo)
     {
-        if (line.find("processor") == 0)
-        {
-            processorCount++;
-        }
+        std::string line;
 
-        if (modelName.empty() &&
-            line.find("model name") == 0)
+        while (std::getline(cpuInfo, line))
         {
-            std::size_t position = line.find(':');
-
-            if (position != std::string::npos)
+            if (line.find("model name") == 0)
             {
-                modelName = line.substr(position + 2);
+                std::cout << "CPU       : "
+                          << line.substr(line.find(':') + 2)
+                          << '\n';
+                break;
             }
         }
     }
 
-    std::cout << "\n--- CPU Information ---\n";
-    std::cout << "CPU Model      : " << modelName << '\n';
-    std::cout << "Logical CPUs   : " << processorCount << '\n';
-}
+    std::ifstream versionFile("/proc/version");
 
-void SystemMonitor::showMemoryInfo()
-{
-    std::ifstream file("/proc/meminfo");
-
-    if (!file)
+    if (versionFile)
     {
-        std::cout << "Unable to read memory information.\n";
-        return;
+        std::string version;
+        std::getline(versionFile, version);
+
+        std::cout << "Kernel    : "
+                  << version
+                  << '\n';
     }
 
-    std::string line;
-    std::string totalMemory;
-    std::string freeMemory;
+    long cores = sysconf(_SC_NPROCESSORS_ONLN);
 
-    while (std::getline(file, line))
-    {
-        if (line.find("MemTotal:") == 0)
-        {
-            totalMemory = line;
-        }
+    std::cout << "CPU Cores : "
+              << cores
+              << '\n';
 
-        if (line.find("MemAvailable:") == 0)
-        {
-            freeMemory = line;
-        }
-    }
-
-    std::cout << "\n--- Memory Information ---\n";
-    std::cout << "Total Memory : " << totalMemory << '\n';
-    std::cout << "Available    : " << freeMemory << '\n';
-}
-
-void SystemMonitor::showSystemInfo()
-{
-    std::cout << "\n=================================\n";
-    std::cout << "       SYSTEM INFORMATION\n";
-    std::cout << "=================================\n";
-
-    showKernelInfo();
-    showCpuInfo();
-    showMemoryInfo();
+    std::cout << "========================================\n";
 }

@@ -4,9 +4,6 @@
 class SystemMonitor
 {
 public:
-    static void showKernelInfo();
-    static void showCpuInfo();
-    static void showMemoryInfo();
     static void showSystemInfo();
 };
 
