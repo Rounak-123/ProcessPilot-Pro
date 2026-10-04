@@ -1,8 +1,9 @@
-processpilot
 *.o
 *.ko
 *.mod
 *.mod.c
-Module.symvers
+*.cmd
 modules.order
+Module.symvers
+processpilot
 logs/*.log
