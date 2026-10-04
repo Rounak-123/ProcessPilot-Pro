@@ -4,7 +4,7 @@
 #include "ServiceManager.h"
 #include "DependencyManager.h"
 #include "Logger.h"
-
+#include "SystemMonitor.h"
 void showMenu()
 {
     std::cout << "\n=================================\n";
@@ -16,8 +16,8 @@ void showMenu()
     std::cout << "3. Restart Service\n";
     std::cout << "4. Check Service Status\n";
     std::cout << "5. Show Dependencies\n";
-    std::cout << "6. Monitor Service\n";
-    std::cout << "7. Exit\n";
+    std::cout << "7. System Information\n";
+    std::cout << "8. Exit\n";
     std::cout << "=================================\n";
     std::cout << "Enter choice: ";
 }
@@ -173,13 +173,19 @@ int main()
 
                 break;
             }
+         
+             case 7:
+		{
+		    SystemMonitor::showSystemInfo();
+		    break;
+		}
 
-            case 7:
+            case 8:
             {
-                std::cout << "Exiting ProcessPilot Pro.\n";
-                Logger::info("ProcessPilot Pro stopped");
+		std::cout << "Exiting ProcessPilot Pro.\n";
+		Logger::info("ProcessPilot Pro stopped");
                 return 0;
-            }
+	    }
 
             default:
             {
