@@ -7,7 +7,8 @@ SRC = src/main.cpp \
       src/ServiceManager.cpp \
       src/DependencyManager.cpp \
       src/Logger.cpp \
-      src/SystemMonitor.cpp
+      src/SystemMonitor.cpp \
+      src/KernelInterface.cpp
 
 all: $(TARGET)
 
