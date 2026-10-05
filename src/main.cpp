@@ -5,6 +5,7 @@
 #include "DependencyManager.h"
 #include "Logger.h"
 #include "SystemMonitor.h"
+#include "KernelInterface.h"
 void showMenu()
 {
     std::cout << "\n=================================\n";
@@ -16,7 +17,8 @@ void showMenu()
     std::cout << "3. Restart Service\n";
     std::cout << "4. Check Service Status\n";
     std::cout << "5. Show Dependencies\n";
-    std::cout << "7. System Information\n";
+    std::cout << "6. System Information\n";
+    std::cout << "7. Kernel Component Status\n";
     std::cout << "8. Exit\n";
     std::cout << "=================================\n";
     std::cout << "Enter choice: ";
